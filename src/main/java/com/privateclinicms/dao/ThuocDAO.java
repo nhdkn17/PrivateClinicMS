@@ -1,0 +1,98 @@
+package com.privateclinicms.dao;
+
+import com.privateclinicms.model.Thuoc;
+import com.privateclinicms.util.JDBCUtil;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ThuocDAO implements DAO<Thuoc> {
+
+    @Override
+    public void add(Thuoc thuoc) {
+        String sql = "INSERT INTO Thuoc (TenThuoc, LoaiThuoc, Gia, SoLuongTon) VALUES (?, ?, ?, ?)";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, thuoc.getTenThuoc());
+            stmt.setString(2, thuoc.getLoaiThuoc());
+            stmt.setDouble(3, thuoc.getGia());
+            stmt.setInt(4, thuoc.getSoLuongTon());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Thuoc getById(int id) {
+        String sql = "SELECT * FROM Thuoc WHERE MaThuoc = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Thuoc thuoc = new Thuoc();
+                thuoc.setMaThuoc(rs.getInt("MaThuoc"));
+                thuoc.setTenThuoc(rs.getString("TenThuoc"));
+                thuoc.setLoaiThuoc(rs.getString("LoaiThuoc"));
+                thuoc.setGia(rs.getDouble("Gia"));
+                thuoc.setSoLuongTon(rs.getInt("SoLuongTon"));
+                return thuoc;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Thuoc> getAll() {
+        List<Thuoc> thuocList = new ArrayList<>();
+        String sql = "SELECT * FROM Thuoc";
+        try (Connection conn = JDBCUtil.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Thuoc thuoc = new Thuoc();
+                thuoc.setMaThuoc(rs.getInt("MaThuoc"));
+                thuoc.setTenThuoc(rs.getString("TenThuoc"));
+                thuoc.setLoaiThuoc(rs.getString("LoaiThuoc"));
+                thuoc.setGia(rs.getDouble("Gia"));
+                thuoc.setSoLuongTon(rs.getInt("SoLuongTon"));
+                thuocList.add(thuoc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return thuocList;
+    }
+
+    @Override
+    public void update(Thuoc thuoc) {
+        String sql = "UPDATE Thuoc SET TenThuoc = ?, LoaiThuoc = ?, Gia = ?, SoLuongTon = ? WHERE MaThuoc = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, thuoc.getTenThuoc());
+            stmt.setString(2, thuoc.getLoaiThuoc());
+            stmt.setDouble(3, thuoc.getGia());
+            stmt.setInt(4, thuoc.getSoLuongTon());
+            stmt.setInt(5, thuoc.getMaThuoc());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM Thuoc WHERE MaThuoc = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
