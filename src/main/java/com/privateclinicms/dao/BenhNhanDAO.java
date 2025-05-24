@@ -1,0 +1,106 @@
+package com.privateclinicms.dao;
+
+import com.privateclinicms.model.BenhNhan;
+import com.privateclinicms.util.JDBCUtil;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BenhNhanDAO implements DAO<BenhNhan> {
+
+    @Override
+    public void add(BenhNhan benhNhan) {
+        String sql = "INSERT INTO BenhNhan (HoTen, NgaySinh, GioiTinh, SoDienThoai, Email, DiaChi) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, benhNhan.getHoTen());
+            stmt.setDate(2, benhNhan.getNgaySinh());
+            stmt.setString(3, benhNhan.getGioiTinh());
+            stmt.setString(4, benhNhan.getSoDienThoai());
+            stmt.setString(5, benhNhan.getEmail());
+            stmt.setString(6, benhNhan.getDiaChi());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public BenhNhan getById(int id) {
+        String sql = "SELECT * FROM BenhNhan WHERE MaBenhNhan = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                BenhNhan benhNhan = new BenhNhan();
+                benhNhan.setMaBenhNhan(rs.getInt("MaBenhNhan"));
+                benhNhan.setHoTen(rs.getString("HoTen"));
+                benhNhan.setNgaySinh(rs.getDate("NgaySinh"));
+                benhNhan.setGioiTinh(rs.getString("GioiTinh"));
+                benhNhan.setSoDienThoai(rs.getString("SoDienThoai"));
+                benhNhan.setEmail(rs.getString("Email"));
+                benhNhan.setDiaChi(rs.getString("DiaChi"));
+                return benhNhan;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<BenhNhan> getAll() {
+        List<BenhNhan> benhNhanList = new ArrayList<>();
+        String sql = "SELECT * FROM BenhNhan";
+        try (Connection conn = JDBCUtil.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                BenhNhan benhNhan = new BenhNhan();
+                benhNhan.setMaBenhNhan(rs.getInt("MaBenhNhan"));
+                benhNhan.setHoTen(rs.getString("HoTen"));
+                benhNhan.setNgaySinh(rs.getDate("NgaySinh"));
+                benhNhan.setGioiTinh(rs.getString("GioiTinh"));
+                benhNhan.setSoDienThoai(rs.getString("SoDienThoai"));
+                benhNhan.setEmail(rs.getString("Email"));
+                benhNhan.setDiaChi(rs.getString("DiaChi"));
+                benhNhanList.add(benhNhan);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return benhNhanList;
+    }
+
+    @Override
+    public void update(BenhNhan benhNhan) {
+        String sql = "UPDATE BenhNhan SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, SoDienThoai = ?, Email = ?, DiaChi = ? WHERE MaBenhNhan = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, benhNhan.getHoTen());
+            stmt.setDate(2, benhNhan.getNgaySinh());
+            stmt.setString(3, benhNhan.getGioiTinh());
+            stmt.setString(4, benhNhan.getSoDienThoai());
+            stmt.setString(5, benhNhan.getEmail());
+            stmt.setString(6, benhNhan.getDiaChi());
+            stmt.setInt(7, benhNhan.getMaBenhNhan());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM BenhNhan WHERE MaBenhNhan = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
