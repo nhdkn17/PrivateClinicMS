@@ -13,7 +13,7 @@ public class JDBCUtil {
             String databaseName = "ClinicManagement";
 
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://" + serverName + ":1433;databaseName=" + databaseName + ";encrypt=true;trustServerCertificate=true";
+            String url = "jdbc:sqlserver://" + serverName + ":1433;databaseName=" + databaseName + ";encrypt=true;trustServerCertificate=true;characterEncoding=UTF-8";
 
             connection = DriverManager.getConnection(url, login, password);
         } catch (Exception e) {

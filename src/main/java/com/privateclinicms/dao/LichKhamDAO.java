@@ -1,9 +1,12 @@
 package com.privateclinicms.dao;
 
 import com.privateclinicms.model.LichKham;
+import com.privateclinicms.model.LichKhamModel;
 import com.privateclinicms.util.JDBCUtil;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,5 +101,66 @@ public class LichKhamDAO implements DAO<LichKham> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<LichKhamModel> getLichKhamHomNay() {
+        List<LichKhamModel> list = new ArrayList<>();
+        String sql = """
+            SELECT lk.MaLichKham, bn.TenBenhNhan, bs.TenBacSi, lk.NgayKham, lk.TrangThai
+                    FROM LichKham lk
+                    JOIN BenhNhan bn ON lk.MaBenhNhan = bn.MaBenhNhan
+                    JOIN BacSi bs ON lk.MaBacSi = bs.MaBacSi
+                    WHERE CAST(lk.NgayKham AS DATE) = CAST(GETDATE() AS DATE)
+        """;
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int maLichKham = rs.getInt("MaLichKham");
+                String tenBenhNhan = rs.getString("TenBenhNhan");
+                String tenBacSi = rs.getString("TenBacSi");
+                LocalDateTime ngayKham = rs.getTimestamp("NgayKham").toLocalDateTime();
+                String trangThai = rs.getString("TrangThai");
+
+                LichKhamModel model = new LichKhamModel(maLichKham, tenBenhNhan, tenBacSi, ngayKham, trangThai);
+                list.add(model);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<LichKhamModel> getLichKhamTheoNgay(LocalDate date) throws SQLException {
+        List<LichKhamModel> list = new ArrayList<>();
+        String query = """
+        SELECT lk.MaLichKham, bn.TenBenhNhan, bs.TenBacSi, lk.NgayKham, lk.TrangThai
+        FROM LichKham lk
+        JOIN BenhNhan bn ON lk.MaBenhNhan = bn.MaBenhNhan
+        JOIN BacSi bs ON lk.MaBacSi = bs.MaBacSi
+        WHERE CONVERT(date, lk.NgayKham) = ?
+        ORDER BY lk.NgayKham
+    """;
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setDate(1, Date.valueOf(date));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int maLichKham = rs.getInt("MaLichKham");
+                String tenBenhNhan = rs.getString("TenBenhNhan");
+                String tenBacSi = rs.getString("TenBacSi");
+                LocalDateTime ngayKham = rs.getTimestamp("NgayKham").toLocalDateTime();
+                String trangThai = rs.getString("TrangThai");
+
+                LichKhamModel model = new LichKhamModel(maLichKham, tenBenhNhan, tenBacSi, ngayKham, trangThai);
+                list.add(model);
+            }
+        }
+
+        return list;
     }
 }

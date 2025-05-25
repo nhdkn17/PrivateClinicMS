@@ -12,8 +12,10 @@ module com.example.privateclinicms {
     requires com.almasb.fxgl.all;
     requires java.sql;
     requires jbcrypt;
+    requires annotations;
 
     opens com.privateclinicms to javafx.fxml;
+    opens com.privateclinicms.model to javafx.base;
     opens com.privateclinicms.controller to javafx.fxml;
     opens com.privateclinicms.controller.other to javafx.fxml;
 
