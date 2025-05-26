@@ -2,14 +2,21 @@ package com.privateclinicms.model;
 
 public class BacSi {
     private int maBacSi;
-    private String hoTen;
+    private String tenBacSi;
     private String chuyenKhoa;
     private String soDienThoai;
     private String email;
 
-    public BacSi(int maBacSi, String hoTen, String chuyenKhoa, String soDienThoai, String email) {
+    public BacSi(int maBacSi, String tenBacSi, String chuyenKhoa, String soDienThoai, String email) {
         this.maBacSi = maBacSi;
-        this.hoTen = hoTen;
+        this.tenBacSi = tenBacSi;
+        this.chuyenKhoa = chuyenKhoa;
+        this.soDienThoai = soDienThoai;
+        this.email = email;
+    }
+
+    public BacSi(String tenBacSi, String chuyenKhoa, String soDienThoai, String email) {
+        this.tenBacSi = tenBacSi;
         this.chuyenKhoa = chuyenKhoa;
         this.soDienThoai = soDienThoai;
         this.email = email;
@@ -26,12 +33,12 @@ public class BacSi {
         this.maBacSi = maBacSi;
     }
 
-    public String getHoTen() {
-        return hoTen;
+    public String getTenBacSi() {
+        return tenBacSi;
     }
 
-    public void setHoTen(String hoTen) {
-        this.hoTen = hoTen;
+    public void setTenBacSi(String tenBacSi) {
+        this.tenBacSi = tenBacSi;
     }
 
     public String getChuyenKhoa() {
@@ -62,7 +69,7 @@ public class BacSi {
     public String toString() {
         return "BacSi{" +
                 "maBacSi=" + maBacSi +
-                ", hoTen='" + hoTen + '\'' +
+                ", tenBacSi='" + tenBacSi + '\'' +
                 ", chuyenKhoa='" + chuyenKhoa + '\'' +
                 ", soDienThoai='" + soDienThoai + '\'' +
                 ", email='" + email + '\'' +

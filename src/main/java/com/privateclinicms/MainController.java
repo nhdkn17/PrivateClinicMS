@@ -26,6 +26,11 @@ public class MainController {
         loadFXMLContent("Dashboard.fxml");
     }
 
+    @FXML
+    private void loadDoctorContent() {
+        loadFXMLContent("DoctorView.fxml");
+    }
+
     private void loadFXMLContent(String fxmlFile) {
         try {
             mainContent.getChildren().clear();

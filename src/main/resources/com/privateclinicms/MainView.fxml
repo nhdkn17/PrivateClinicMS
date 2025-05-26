@@ -27,7 +27,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button mnemonicParsing="false" styleClass="menu-button" text="Bác Sĩ">
+                        <Button onAction="#loadDoctorContent" mnemonicParsing="false" styleClass="menu-button" text="Bác Sĩ">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-40.0">
                                     <image>
