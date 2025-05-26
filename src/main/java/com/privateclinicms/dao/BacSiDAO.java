@@ -5,16 +5,18 @@ import com.privateclinicms.util.JDBCUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BacSiDAO implements DAO<BacSi> {
 
     @Override
     public void add(BacSi bacSi) {
-        String sql = "INSERT INTO BacSi (HoTen, ChuyenKhoa, SoDienThoai, Email) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO BacSi (TenBacSi, ChuyenKhoa, SoDienThoai, Email) VALUES (?, ?, ?, ?)";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, bacSi.getHoTen());
+            stmt.setString(1, bacSi.getTenBacSi());
             stmt.setString(2, bacSi.getChuyenKhoa());
             stmt.setString(3, bacSi.getSoDienThoai());
             stmt.setString(4, bacSi.getEmail());
@@ -34,7 +36,7 @@ public class BacSiDAO implements DAO<BacSi> {
             if (rs.next()) {
                 BacSi bacSi = new BacSi();
                 bacSi.setMaBacSi(rs.getInt("MaBacSi"));
-                bacSi.setHoTen(rs.getString("HoTen"));
+                bacSi.setTenBacSi(rs.getString("TenBacSi"));
                 bacSi.setChuyenKhoa(rs.getString("ChuyenKhoa"));
                 bacSi.setSoDienThoai(rs.getString("SoDienThoai"));
                 bacSi.setEmail(rs.getString("Email"));
@@ -56,7 +58,7 @@ public class BacSiDAO implements DAO<BacSi> {
             while (rs.next()) {
                 BacSi bacSi = new BacSi();
                 bacSi.setMaBacSi(rs.getInt("MaBacSi"));
-                bacSi.setHoTen(rs.getString("HoTen"));
+                bacSi.setTenBacSi(rs.getString("TenBacSi"));
                 bacSi.setChuyenKhoa(rs.getString("ChuyenKhoa"));
                 bacSi.setSoDienThoai(rs.getString("SoDienThoai"));
                 bacSi.setEmail(rs.getString("Email"));
@@ -70,19 +72,22 @@ public class BacSiDAO implements DAO<BacSi> {
 
     @Override
     public void update(BacSi bacSi) {
-        String sql = "UPDATE BacSi SET HoTen = ?, ChuyenKhoa = ?, SoDienThoai = ?, Email = ? WHERE MaBacSi = ?";
+        String sql = "UPDATE bacsi SET tenBacSi = ?, chuyenKhoa = ?, soDienThoai = ?, email = ? WHERE maBacSi = ?";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, bacSi.getHoTen());
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, bacSi.getTenBacSi());
             stmt.setString(2, bacSi.getChuyenKhoa());
             stmt.setString(3, bacSi.getSoDienThoai());
             stmt.setString(4, bacSi.getEmail());
             stmt.setInt(5, bacSi.getMaBacSi());
-            stmt.executeUpdate();
+
+            int rowsUpdated = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void delete(int id) {
@@ -94,5 +99,26 @@ public class BacSiDAO implements DAO<BacSi> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Map<String, Integer> laySoBacSiTheoChuyenKhoa() {
+        Map<String, Integer> result = new HashMap<>();
+        String sql = "SELECT ChuyenKhoa, COUNT(*) AS SoBacSi FROM BacSi GROUP BY ChuyenKhoa";
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String chuyenKhoa = rs.getString("ChuyenKhoa");
+                int soBacSi = rs.getInt("SoBacSi");
+                result.put(chuyenKhoa, soBacSi);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
