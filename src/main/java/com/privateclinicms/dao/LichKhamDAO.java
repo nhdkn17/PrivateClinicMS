@@ -14,12 +14,12 @@ public class LichKhamDAO implements DAO<LichKham> {
 
     @Override
     public void add(LichKham lichKham) {
-        String sql = "INSERT INTO LichKham (MaBenhNhan, MaBacSi, NgayKham, TrangThai, GhiChu) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO LichKham (MaBenhNhan, MaBacSi, GioBatDau, TrangThai, GhiChu) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, lichKham.getMaBenhNhan());
             stmt.setInt(2, lichKham.getMaBacSi());
-            stmt.setTimestamp(3, lichKham.getNgayKham());
+            stmt.setTimestamp(3, lichKham.getGioBatDau());
             stmt.setString(4, lichKham.getTrangThai());
             stmt.setString(5, lichKham.getGhiChu());
             stmt.executeUpdate();
@@ -40,7 +40,7 @@ public class LichKhamDAO implements DAO<LichKham> {
                 lichKham.setMaLichKham(rs.getInt("MaLichKham"));
                 lichKham.setMaBenhNhan(rs.getInt("MaBenhNhan"));
                 lichKham.setMaBacSi(rs.getInt("MaBacSi"));
-                lichKham.setNgayKham(rs.getTimestamp("NgayKham"));
+                lichKham.setGioBatDau(rs.getTimestamp("GioBatDau"));
                 lichKham.setTrangThai(rs.getString("TrangThai"));
                 lichKham.setGhiChu(rs.getString("GhiChu"));
                 return lichKham;
@@ -63,7 +63,7 @@ public class LichKhamDAO implements DAO<LichKham> {
                 lichKham.setMaLichKham(rs.getInt("MaLichKham"));
                 lichKham.setMaBenhNhan(rs.getInt("MaBenhNhan"));
                 lichKham.setMaBacSi(rs.getInt("MaBacSi"));
-                lichKham.setNgayKham(rs.getTimestamp("NgayKham"));
+                lichKham.setGioBatDau(rs.getTimestamp("GioBatDau"));
                 lichKham.setTrangThai(rs.getString("TrangThai"));
                 lichKham.setGhiChu(rs.getString("GhiChu"));
                 lichKhamList.add(lichKham);
@@ -76,12 +76,12 @@ public class LichKhamDAO implements DAO<LichKham> {
 
     @Override
     public void update(LichKham lichKham) {
-        String sql = "UPDATE LichKham SET MaBenhNhan = ?, MaBacSi = ?, NgayKham = ?, TrangThai = ?, GhiChu = ? WHERE MaLichKham = ?";
+        String sql = "UPDATE LichKham SET MaBenhNhan = ?, MaBacSi = ?, GioBatDau = ?, TrangThai = ?, GhiChu = ? WHERE MaLichKham = ?";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, lichKham.getMaBenhNhan());
             stmt.setInt(2, lichKham.getMaBacSi());
-            stmt.setTimestamp(3, lichKham.getNgayKham());
+            stmt.setTimestamp(3, lichKham.getGioBatDau());
             stmt.setString(4, lichKham.getTrangThai());
             stmt.setString(5, lichKham.getGhiChu());
             stmt.setInt(6, lichKham.getMaLichKham());
@@ -106,11 +106,11 @@ public class LichKhamDAO implements DAO<LichKham> {
     public List<LichKhamModel> getLichKhamHomNay() {
         List<LichKhamModel> list = new ArrayList<>();
         String sql = """
-            SELECT lk.MaLichKham, bn.TenBenhNhan, bs.TenBacSi, lk.NgayKham, lk.TrangThai
+            SELECT lk.MaLichKham, bn.TenBenhNhan, bs.TenBacSi, lk.GioBatDau, lk.TrangThai, lk.GhiChu
                     FROM LichKham lk
                     JOIN BenhNhan bn ON lk.MaBenhNhan = bn.MaBenhNhan
                     JOIN BacSi bs ON lk.MaBacSi = bs.MaBacSi
-                    WHERE CAST(lk.NgayKham AS DATE) = CAST(GETDATE() AS DATE)
+                    WHERE CAST(lk.GioBatDau AS DATE) = CAST(GETDATE() AS DATE)
         """;
 
         try (Connection conn = JDBCUtil.getConnection();
@@ -121,10 +121,11 @@ public class LichKhamDAO implements DAO<LichKham> {
                 int maLichKham = rs.getInt("MaLichKham");
                 String tenBenhNhan = rs.getString("TenBenhNhan");
                 String tenBacSi = rs.getString("TenBacSi");
-                LocalDateTime ngayKham = rs.getTimestamp("NgayKham").toLocalDateTime();
+                LocalDateTime gioBatDau = rs.getTimestamp("GioBatDau").toLocalDateTime();
                 String trangThai = rs.getString("TrangThai");
+                String ghiChu = rs.getString("GhiChu");
 
-                LichKhamModel model = new LichKhamModel(maLichKham, tenBenhNhan, tenBacSi, ngayKham, trangThai);
+                LichKhamModel model = new LichKhamModel(maLichKham, tenBenhNhan, tenBacSi, gioBatDau, trangThai, ghiChu);
                 list.add(model);
             }
         } catch (SQLException e) {
@@ -135,32 +136,68 @@ public class LichKhamDAO implements DAO<LichKham> {
 
     public List<LichKhamModel> getLichKhamTheoNgay(LocalDate date) throws SQLException {
         List<LichKhamModel> list = new ArrayList<>();
+
+        Timestamp startOfDay = Timestamp.valueOf(date.atStartOfDay());
+        Timestamp endOfDay = Timestamp.valueOf(date.plusDays(1).atStartOfDay());
+
         String query = """
-        SELECT lk.MaLichKham, bn.TenBenhNhan, bs.TenBacSi, lk.NgayKham, lk.TrangThai
+        SELECT lk.MaLichKham, bn.TenBenhNhan, bs.TenBacSi, lk.GioBatDau, lk.TrangThai, lk.GhiChu
         FROM LichKham lk
         JOIN BenhNhan bn ON lk.MaBenhNhan = bn.MaBenhNhan
         JOIN BacSi bs ON lk.MaBacSi = bs.MaBacSi
-        WHERE CONVERT(date, lk.NgayKham) = ?
-        ORDER BY lk.NgayKham
+        WHERE lk.GioBatDau >= ? AND lk.GioBatDau < ?
+        ORDER BY lk.GioBatDau
     """;
 
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
 
-            ps.setDate(1, Date.valueOf(date));
+            ps.setTimestamp(1, startOfDay);
+            ps.setTimestamp(2, endOfDay);
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int maLichKham = rs.getInt("MaLichKham");
                 String tenBenhNhan = rs.getString("TenBenhNhan");
                 String tenBacSi = rs.getString("TenBacSi");
-                LocalDateTime ngayKham = rs.getTimestamp("NgayKham").toLocalDateTime();
+                LocalDateTime gioBatDau = rs.getTimestamp("GioBatDau").toLocalDateTime();
                 String trangThai = rs.getString("TrangThai");
+                String ghiChu = rs.getString("GhiChu");
 
-                LichKhamModel model = new LichKhamModel(maLichKham, tenBenhNhan, tenBacSi, ngayKham, trangThai);
+                LichKhamModel model = new LichKhamModel(maLichKham, tenBenhNhan, tenBacSi, gioBatDau, trangThai, ghiChu);
                 list.add(model);
             }
         }
+        return list;
+    }
 
+    public List<LichKham> getLichKhamEntitiesTheoNgay(LocalDate date) throws SQLException {
+        List<LichKham> list = new ArrayList<>();
+
+        Timestamp startOfDay = Timestamp.valueOf(date.atStartOfDay());
+        Timestamp endOfDay = Timestamp.valueOf(date.plusDays(1).atStartOfDay());
+
+        String query = "SELECT * FROM LichKham WHERE GioBatDau >= ? AND GioBatDau < ? ORDER BY GioBatDau";
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setTimestamp(1, startOfDay);
+            ps.setTimestamp(2, endOfDay);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int maLichKham = rs.getInt("MaLichKham");
+                int maBenhNhan = rs.getInt("MaBenhNhan");
+                int maBacSi = rs.getInt("MaBacSi");
+                Timestamp tsGioBatDau = rs.getTimestamp("GioBatDau");
+                String trangThai = rs.getString("TrangThai");
+                String ghiChu = rs.getString("GhiChu");
+
+                LichKham lk = new LichKham(maLichKham, maBenhNhan, maBacSi, tsGioBatDau, trangThai, ghiChu);
+                list.add(lk);
+            }
+        }
         return list;
     }
 }

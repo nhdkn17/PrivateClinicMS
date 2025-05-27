@@ -16,7 +16,7 @@ public class DashboardService {
     }
 
     public int getSoBenhNhanHomNay() throws SQLException {
-        String sql = "SELECT COUNT(DISTINCT MaBenhNhan) FROM LichKham WHERE CAST(NgayKham AS DATE) = CAST(GETDATE() AS DATE)";
+        String sql = "SELECT COUNT(DISTINCT MaBenhNhan) FROM LichKham WHERE CAST(GioBatDau AS DATE) = CAST(GETDATE() AS DATE)";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException e) {
@@ -26,7 +26,7 @@ public class DashboardService {
     }
 
     public int getSoLichHenHomNay() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM LichKham WHERE CAST(NgayKham AS DATE) = CAST(GETDATE() AS DATE)";
+        String sql = "SELECT COUNT(*) FROM LichKham WHERE CAST(GioBatDau AS DATE) = CAST(GETDATE() AS DATE)";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException e) {
@@ -36,7 +36,7 @@ public class DashboardService {
     }
 
     public int getSoDonThuocHomNay() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM ToaThuoc WHERE MaLichKham IN (SELECT MaLichKham FROM LichKham WHERE CAST(NgayKham AS DATE) = CAST(GETDATE() AS DATE))";
+        String sql = "SELECT COUNT(*) FROM ToaThuoc WHERE MaLichKham IN (SELECT MaLichKham FROM LichKham WHERE CAST(GioBatDau AS DATE) = CAST(GETDATE() AS DATE))";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException e) {
