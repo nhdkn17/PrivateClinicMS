@@ -6,15 +6,23 @@ public class LichKham {
     private int maLichKham;
     private int maBenhNhan;
     private int maBacSi;
-    private Timestamp ngayKham;
+    private Timestamp gioBatDau;
     private String trangThai;
     private String ghiChu;
 
-    public LichKham(int maLichKham, int maBenhNhan, int maBacSi, Timestamp ngayKham, String trangThai, String ghiChu) {
+    public LichKham(int maLichKham, int maBenhNhan, int maBacSi, Timestamp gioBatDau, String trangThai, String ghiChu) {
         this.maLichKham = maLichKham;
         this.maBenhNhan = maBenhNhan;
         this.maBacSi = maBacSi;
-        this.ngayKham = ngayKham;
+        this.gioBatDau = gioBatDau;
+        this.trangThai = trangThai;
+        this.ghiChu = ghiChu;
+    }
+
+    public LichKham(int maBenhNhan, int maBacSi, Timestamp gioBatDau, String trangThai, String ghiChu) {
+        this.maBenhNhan = maBenhNhan;
+        this.maBacSi = maBacSi;
+        this.gioBatDau = gioBatDau;
         this.trangThai = trangThai;
         this.ghiChu = ghiChu;
     }
@@ -46,12 +54,12 @@ public class LichKham {
         this.maBacSi = maBacSi;
     }
 
-    public Timestamp getNgayKham() {
-        return ngayKham;
+    public Timestamp getGioBatDau() {
+        return gioBatDau;
     }
 
-    public void setNgayKham(Timestamp ngayKham) {
-        this.ngayKham = ngayKham;
+    public void setGioBatDau(Timestamp gioBatDau) {
+        this.gioBatDau = gioBatDau;
     }
 
     public String getTrangThai() {
@@ -76,7 +84,7 @@ public class LichKham {
                 "maLichKham=" + maLichKham +
                 ", maBenhNhan=" + maBenhNhan +
                 ", maBacSi=" + maBacSi +
-                ", ngayKham=" + ngayKham +
+                ", gioBatDau=" + gioBatDau +
                 ", trangThai='" + trangThai + '\'' +
                 ", ghiChu='" + ghiChu + '\'' +
                 '}';

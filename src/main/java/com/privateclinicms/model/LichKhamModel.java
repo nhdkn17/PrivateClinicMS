@@ -1,29 +1,33 @@
 package com.privateclinicms.model;
 
 import javafx.beans.property.*;
+
 import java.time.LocalDateTime;
 
 public class LichKhamModel {
     private final IntegerProperty maLichKham;
     private final StringProperty tenBenhNhan;
     private final StringProperty tenBacSi;
-    private final ObjectProperty<LocalDateTime> ngayKham;
+    private final ObjectProperty<LocalDateTime> gioBatDau;
     private final StringProperty trangThai;
+    private final StringProperty ghiChu;
 
-    public LichKhamModel(IntegerProperty maLichKham, StringProperty tenBenhNhan, StringProperty tenBacSi, ObjectProperty<LocalDateTime> ngayKham, StringProperty trangThai) {
+    public LichKhamModel(IntegerProperty maLichKham, StringProperty tenBenhNhan, StringProperty tenBacSi, ObjectProperty<LocalDateTime> gioBatDau, StringProperty trangThai, StringProperty ghiChu) {
         this.maLichKham = maLichKham;
         this.tenBenhNhan = tenBenhNhan;
         this.tenBacSi = tenBacSi;
-        this.ngayKham = ngayKham;
+        this.gioBatDau = gioBatDau;
         this.trangThai = trangThai;
+        this.ghiChu = ghiChu;
     }
 
-    public LichKhamModel(int maLichKham, String tenBenhNhan, String tenBacSi, LocalDateTime ngayKham, String trangThai) {
+    public LichKhamModel(int maLichKham, String tenBenhNhan, String tenBacSi, LocalDateTime gioBatDau, String trangThai, String ghiChu) {
         this.maLichKham = new SimpleIntegerProperty(maLichKham);
         this.tenBenhNhan = new SimpleStringProperty(tenBenhNhan);
         this.tenBacSi = new SimpleStringProperty(tenBacSi);
-        this.ngayKham = new SimpleObjectProperty<>(ngayKham);
+        this.gioBatDau = new SimpleObjectProperty<>(gioBatDau);
         this.trangThai = new SimpleStringProperty(trangThai);
+        this.ghiChu = new SimpleStringProperty(ghiChu);
     }
 
     public int getMaLichKham() {
@@ -50,12 +54,12 @@ public class LichKhamModel {
         return tenBacSi;
     }
 
-    public LocalDateTime getNgayKham() {
-        return ngayKham.get();
+    public LocalDateTime getGioBatDau() {
+        return gioBatDau.get();
     }
 
-    public ObjectProperty<LocalDateTime> ngayKhamProperty() {
-        return ngayKham;
+    public ObjectProperty<LocalDateTime> gioBatDauProperty() {
+        return gioBatDau;
     }
 
     public String getTrangThai() {
@@ -64,5 +68,13 @@ public class LichKhamModel {
 
     public StringProperty trangThaiProperty() {
         return trangThai;
+    }
+
+    public String getGhiChu() {
+        return ghiChu.get();
+    }
+
+    public StringProperty ghiChuProperty() {
+        return ghiChu;
     }
 }

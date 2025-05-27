@@ -70,7 +70,7 @@ public class DashboardController {
         colMaLichKham.setCellValueFactory(new PropertyValueFactory<>("maLichKham"));
         colTenBenhNhan.setCellValueFactory(new PropertyValueFactory<>("tenBenhNhan"));
         colTenBacSi.setCellValueFactory(new PropertyValueFactory<>("tenBacSi"));
-        colNgayKham.setCellValueFactory(new PropertyValueFactory<>("ngayKham"));
+        colNgayKham.setCellValueFactory(new PropertyValueFactory<>("gioBatDau"));
         colTrangThai.setCellValueFactory(new PropertyValueFactory<>("trangThai"));
 
         datePickerLichHen.valueProperty().addListener((obs, oldDate, newDate) -> {
