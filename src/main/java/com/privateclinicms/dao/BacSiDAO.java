@@ -82,7 +82,7 @@ public class BacSiDAO implements DAO<BacSi> {
             stmt.setString(4, bacSi.getEmail());
             stmt.setInt(5, bacSi.getMaBacSi());
 
-            int rowsUpdated = stmt.executeUpdate();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
