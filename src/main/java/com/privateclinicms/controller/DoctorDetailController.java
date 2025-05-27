@@ -9,6 +9,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class DoctorDetailController {
@@ -64,6 +65,8 @@ public class DoctorDetailController {
                 Dialog.showNotice("Lỗi", "Xóa thất bại!\n" + e.getMessage(), false);
             }
         }
+        Map<String, Integer> data = bacSiDAO.laySoBacSiTheoChuyenKhoa();
+        doctorController.loadBieuDoSoBacSi(data);
     }
 
     @FXML

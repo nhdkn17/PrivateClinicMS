@@ -4,21 +4,33 @@ import java.sql.Date;
 
 public class BenhNhan {
     private int maBenhNhan;
-    private String hoTen;
+    private String tenBenhNhan;
     private Date ngaySinh;
     private String gioiTinh;
     private String soDienThoai;
     private String email;
     private String diaChi;
+    private Date ngayKham;
 
-    public BenhNhan(int maBenhNhan, String hoTen, Date ngaySinh, String gioiTinh, String soDienThoai, String email, String diaChi) {
+    public BenhNhan(int maBenhNhan, String tenBenhNhan, Date ngaySinh, String gioiTinh, String soDienThoai, String email, String diaChi, Date ngayKham) {
         this.maBenhNhan = maBenhNhan;
-        this.hoTen = hoTen;
+        this.tenBenhNhan = tenBenhNhan;
         this.ngaySinh = ngaySinh;
         this.gioiTinh = gioiTinh;
         this.soDienThoai = soDienThoai;
         this.email = email;
         this.diaChi = diaChi;
+        this.ngayKham = ngayKham;
+    }
+
+    public BenhNhan(String tenBenhNhan, Date ngaySinh, String gioiTinh, String soDienThoai, String email, String diaChi, Date ngayKham) {
+        this.tenBenhNhan = tenBenhNhan;
+        this.ngaySinh = ngaySinh;
+        this.gioiTinh = gioiTinh;
+        this.soDienThoai = soDienThoai;
+        this.email = email;
+        this.diaChi = diaChi;
+        this.ngayKham = ngayKham;
     }
 
     public BenhNhan() {
@@ -32,12 +44,12 @@ public class BenhNhan {
         this.maBenhNhan = maBenhNhan;
     }
 
-    public String getHoTen() {
-        return hoTen;
+    public String getTenBenhNhan() {
+        return tenBenhNhan;
     }
 
-    public void setHoTen(String hoTen) {
-        this.hoTen = hoTen;
+    public void setTenBenhNhan(String tenBenhNhan) {
+        this.tenBenhNhan = tenBenhNhan;
     }
 
     public Date getNgaySinh() {
@@ -80,16 +92,25 @@ public class BenhNhan {
         this.diaChi = diaChi;
     }
 
+    public Date getNgayKham() {
+        return ngayKham;
+    }
+
+    public void setNgayKham(Date ngayKham) {
+        this.ngayKham = ngayKham;
+    }
+
     @Override
     public String toString() {
         return "BenhNhan{" +
                 "maBenhNhan=" + maBenhNhan +
-                ", hoTen='" + hoTen + '\'' +
+                ", tenBenhNhan='" + tenBenhNhan + '\'' +
                 ", ngaySinh=" + ngaySinh +
                 ", gioiTinh='" + gioiTinh + '\'' +
                 ", soDienThoai='" + soDienThoai + '\'' +
                 ", email='" + email + '\'' +
                 ", diaChi='" + diaChi + '\'' +
+                ", ngayKham=" + ngayKham +
                 '}';
     }
 }

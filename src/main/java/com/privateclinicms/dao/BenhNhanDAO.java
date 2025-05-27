@@ -11,15 +11,17 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
 
     @Override
     public void add(BenhNhan benhNhan) {
-        String sql = "INSERT INTO BenhNhan (HoTen, NgaySinh, GioiTinh, SoDienThoai, Email, DiaChi) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO BenhNhan(TenBenhNhan, NgaySinh, GioiTinh, SoDienThoai, Email, DiaChi, NgayKham) VALUES(?,?,?,?,?,?,?)";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, benhNhan.getHoTen());
+            stmt.setString(1, benhNhan.getTenBenhNhan());
             stmt.setDate(2, benhNhan.getNgaySinh());
             stmt.setString(3, benhNhan.getGioiTinh());
             stmt.setString(4, benhNhan.getSoDienThoai());
             stmt.setString(5, benhNhan.getEmail());
             stmt.setString(6, benhNhan.getDiaChi());
+            stmt.setDate(7, benhNhan.getNgayKham());
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,7 +38,7 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
             if (rs.next()) {
                 BenhNhan benhNhan = new BenhNhan();
                 benhNhan.setMaBenhNhan(rs.getInt("MaBenhNhan"));
-                benhNhan.setHoTen(rs.getString("HoTen"));
+                benhNhan.setTenBenhNhan(rs.getString("TenBenhNhan"));
                 benhNhan.setNgaySinh(rs.getDate("NgaySinh"));
                 benhNhan.setGioiTinh(rs.getString("GioiTinh"));
                 benhNhan.setSoDienThoai(rs.getString("SoDienThoai"));
@@ -55,17 +57,18 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
         List<BenhNhan> benhNhanList = new ArrayList<>();
         String sql = "SELECT * FROM BenhNhan";
         try (Connection conn = JDBCUtil.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 BenhNhan benhNhan = new BenhNhan();
                 benhNhan.setMaBenhNhan(rs.getInt("MaBenhNhan"));
-                benhNhan.setHoTen(rs.getString("HoTen"));
+                benhNhan.setTenBenhNhan(rs.getString("TenBenhNhan"));
                 benhNhan.setNgaySinh(rs.getDate("NgaySinh"));
                 benhNhan.setGioiTinh(rs.getString("GioiTinh"));
                 benhNhan.setSoDienThoai(rs.getString("SoDienThoai"));
                 benhNhan.setEmail(rs.getString("Email"));
                 benhNhan.setDiaChi(rs.getString("DiaChi"));
+                benhNhan.setNgayKham(rs.getDate("NgayKham"));
                 benhNhanList.add(benhNhan);
             }
         } catch (SQLException e) {
@@ -76,10 +79,10 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
 
     @Override
     public void update(BenhNhan benhNhan) {
-        String sql = "UPDATE BenhNhan SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, SoDienThoai = ?, Email = ?, DiaChi = ? WHERE MaBenhNhan = ?";
+        String sql = "UPDATE BenhNhan SET TenBenhNhan = ?, NgaySinh = ?, GioiTinh = ?, SoDienThoai = ?, Email = ?, DiaChi = ? WHERE MaBenhNhan = ?";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, benhNhan.getHoTen());
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, benhNhan.getTenBenhNhan());
             stmt.setDate(2, benhNhan.getNgaySinh());
             stmt.setString(3, benhNhan.getGioiTinh());
             stmt.setString(4, benhNhan.getSoDienThoai());
@@ -96,7 +99,7 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
     public void delete(int id) {
         String sql = "DELETE FROM BenhNhan WHERE MaBenhNhan = ?";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {

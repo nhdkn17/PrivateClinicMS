@@ -55,7 +55,9 @@ public class DoctorController {
     private void setupAutoCompleteChuyenKhoa() {
         List<String> dsChuyenKhoa = List.of(
                 "Nội khoa", "Ngoại khoa", "Sản phụ khoa", "Nhi khoa",
-                "Tai mũi họng", "Răng hàm mặt", "Da liễu", "Tim mạch"
+                "Tai mũi họng", "Răng hàm mặt", "Da liễu", "Tim mạch",
+                "Ngoại thần kinh", "Tâm thần", "Mắt", "Nội tiết",
+                "Hồi sức cấp cứu", "Phục hồi chức năng"
         );
         TextFields.bindAutoCompletion(txtChuyenKhoa, dsChuyenKhoa);
     }
@@ -83,6 +85,8 @@ public class DoctorController {
         } catch (Exception e) {
             Dialog.showNotice("Lỗi", "Thêm bác sĩ thất bại!\n" + e.getMessage(), false);
         }
+        Map<String, Integer> data = bacSiDAO.laySoBacSiTheoChuyenKhoa();
+        loadBieuDoSoBacSi(data);
     }
 
     @FXML
@@ -108,6 +112,8 @@ public class DoctorController {
         } catch (Exception e) {
             Dialog.showNotice("Lỗi", "Cập nhật bác sĩ thất bại!\n" + e.getMessage(), false);
         }
+        Map<String, Integer> data = bacSiDAO.laySoBacSiTheoChuyenKhoa();
+        loadBieuDoSoBacSi(data);
     }
 
     @FXML
@@ -126,8 +132,6 @@ public class DoctorController {
                 filteredList.add(bacSi);
             }
         }
-
-        // Hiển thị danh sách đã lọc
         hienThiDanhSachBacSi(filteredList);
     }
 
