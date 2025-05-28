@@ -3,7 +3,6 @@ package com.privateclinicms.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 public class JDBCUtil {
-
     public static Connection getConnection() {
         Connection connection = null;
         try {
@@ -16,7 +15,9 @@ public class JDBCUtil {
             String url = "jdbc:sqlserver://" + serverName + ":1433;databaseName=" + databaseName + ";encrypt=true;trustServerCertificate=true;characterEncoding=UTF-8";
 
             connection = DriverManager.getConnection(url, login, password);
+            System.out.println("✅ Đã kết nối thành công tới DB: " + connection.getCatalog());
         } catch (Exception e) {
+            System.err.println("❌ Lỗi kết nối DB:");
             e.printStackTrace();
         }
 

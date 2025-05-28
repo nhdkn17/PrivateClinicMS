@@ -4,13 +4,15 @@ public class Thuoc {
     private int maThuoc;
     private String tenThuoc;
     private String loaiThuoc;
+    private String donVi;
     private double gia;
     private int soLuongTon;
 
-    public Thuoc(int maThuoc, String tenThuoc, String loaiThuoc, double gia, int soLuongTon) {
+    public Thuoc(int maThuoc, String tenThuoc, String loaiThuoc, String donVi, double gia, int soLuongTon) {
         this.maThuoc = maThuoc;
         this.tenThuoc = tenThuoc;
         this.loaiThuoc = loaiThuoc;
+        this.donVi = donVi;
         this.gia = gia;
         this.soLuongTon = soLuongTon;
     }
@@ -42,6 +44,14 @@ public class Thuoc {
         this.loaiThuoc = loaiThuoc;
     }
 
+    public String getDonVi() {
+        return donVi;
+    }
+
+    public void setDonVi(String donVi) {
+        this.donVi = donVi;
+    }
+
     public double getGia() {
         return gia;
     }
@@ -64,6 +74,7 @@ public class Thuoc {
                 "maThuoc=" + maThuoc +
                 ", tenThuoc='" + tenThuoc + '\'' +
                 ", loaiThuoc='" + loaiThuoc + '\'' +
+                ", donVi='" + donVi + '\'' +
                 ", gia=" + gia +
                 ", soLuongTon=" + soLuongTon +
                 '}';

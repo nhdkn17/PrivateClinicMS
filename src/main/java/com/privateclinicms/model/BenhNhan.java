@@ -33,6 +33,12 @@ public class BenhNhan {
         this.ngayKham = ngayKham;
     }
 
+    public BenhNhan(int maBenhNhan, String tenBenhNhan, String soDienThoai) {
+        this.maBenhNhan = maBenhNhan;
+        this.tenBenhNhan = tenBenhNhan;
+        this.soDienThoai = soDienThoai;
+    }
+
     public BenhNhan() {
     }
 

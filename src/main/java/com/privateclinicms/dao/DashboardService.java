@@ -36,8 +36,9 @@ public class DashboardService {
     }
 
     public int getSoDonThuocHomNay() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM ToaThuoc WHERE MaLichKham IN (SELECT MaLichKham FROM LichKham WHERE CAST(GioBatDau AS DATE) = CAST(GETDATE() AS DATE))";
-        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        String sql = "SELECT COUNT(*) FROM ToaThuoc WHERE CAST(NgayLayThuoc AS DATE) = CAST(GETDATE() AS DATE)";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException e) {
             e.printStackTrace();
