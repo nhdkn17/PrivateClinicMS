@@ -41,6 +41,11 @@ public class MainController {
         loadFXMLContent("AppointmentView.fxml");
     }
 
+    @FXML
+    private void loadMedicineContent() {
+        loadFXMLContent("MedicineView.fxml");
+    }
+
     private void loadFXMLContent(String fxmlFile) {
         try {
             mainContent.getChildren().clear();

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BenhNhanDAO implements DAO<BenhNhan> {
-
     @Override
     public void add(BenhNhan benhNhan) {
         String sql = "INSERT INTO BenhNhan(TenBenhNhan, NgaySinh, GioiTinh, SoDienThoai, Email, DiaChi, NgayKham) VALUES(?,?,?,?,?,?,?)";
@@ -105,5 +104,21 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Integer getMaBenhNhanByTen(String tenBenhNhan) {
+        String sql = "SELECT MaBenhNhan FROM BenhNhan WHERE TenBenhNhan = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, tenBenhNhan);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("MaBenhNhan");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

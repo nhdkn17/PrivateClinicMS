@@ -11,13 +11,14 @@ public class ThuocDAO implements DAO<Thuoc> {
 
     @Override
     public void add(Thuoc thuoc) {
-        String sql = "INSERT INTO Thuoc (TenThuoc, LoaiThuoc, Gia, SoLuongTon) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Thuoc (TenThuoc, LoaiThuoc, DonVi, Gia, SoLuongTon) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, thuoc.getTenThuoc());
             stmt.setString(2, thuoc.getLoaiThuoc());
-            stmt.setDouble(3, thuoc.getGia());
-            stmt.setInt(4, thuoc.getSoLuongTon());
+            stmt.setString(3, thuoc.getDonVi());
+            stmt.setDouble(4, thuoc.getGia());
+            stmt.setInt(5, thuoc.getSoLuongTon());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -28,7 +29,7 @@ public class ThuocDAO implements DAO<Thuoc> {
     public Thuoc getById(int id) {
         String sql = "SELECT * FROM Thuoc WHERE MaThuoc = ?";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -36,6 +37,7 @@ public class ThuocDAO implements DAO<Thuoc> {
                 thuoc.setMaThuoc(rs.getInt("MaThuoc"));
                 thuoc.setTenThuoc(rs.getString("TenThuoc"));
                 thuoc.setLoaiThuoc(rs.getString("LoaiThuoc"));
+                thuoc.setDonVi(rs.getString("DonVi"));
                 thuoc.setGia(rs.getDouble("Gia"));
                 thuoc.setSoLuongTon(rs.getInt("SoLuongTon"));
                 return thuoc;
@@ -51,13 +53,14 @@ public class ThuocDAO implements DAO<Thuoc> {
         List<Thuoc> thuocList = new ArrayList<>();
         String sql = "SELECT * FROM Thuoc";
         try (Connection conn = JDBCUtil.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Thuoc thuoc = new Thuoc();
                 thuoc.setMaThuoc(rs.getInt("MaThuoc"));
                 thuoc.setTenThuoc(rs.getString("TenThuoc"));
                 thuoc.setLoaiThuoc(rs.getString("LoaiThuoc"));
+                thuoc.setDonVi(rs.getString("DonVi"));
                 thuoc.setGia(rs.getDouble("Gia"));
                 thuoc.setSoLuongTon(rs.getInt("SoLuongTon"));
                 thuocList.add(thuoc);
@@ -70,14 +73,15 @@ public class ThuocDAO implements DAO<Thuoc> {
 
     @Override
     public void update(Thuoc thuoc) {
-        String sql = "UPDATE Thuoc SET TenThuoc = ?, LoaiThuoc = ?, Gia = ?, SoLuongTon = ? WHERE MaThuoc = ?";
+        String sql = "UPDATE Thuoc SET TenThuoc = ?, LoaiThuoc = ?, DonVi = ?, Gia = ?, SoLuongTon = ? WHERE MaThuoc = ?";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, thuoc.getTenThuoc());
             stmt.setString(2, thuoc.getLoaiThuoc());
-            stmt.setDouble(3, thuoc.getGia());
-            stmt.setInt(4, thuoc.getSoLuongTon());
-            stmt.setInt(5, thuoc.getMaThuoc());
+            stmt.setString(3, thuoc.getDonVi());
+            stmt.setDouble(4, thuoc.getGia());
+            stmt.setInt(5, thuoc.getSoLuongTon());
+            stmt.setInt(6, thuoc.getMaThuoc());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,8 +92,20 @@ public class ThuocDAO implements DAO<Thuoc> {
     public void delete(int id) {
         String sql = "DELETE FROM Thuoc WHERE MaThuoc = ?";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void capNhatSoLuongTon(int maThuoc, int soLuongMoi) {
+        String sql = "UPDATE Thuoc SET SoLuongTon = ? WHERE MaThuoc = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, soLuongMoi);
+            stmt.setInt(2, maThuoc);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

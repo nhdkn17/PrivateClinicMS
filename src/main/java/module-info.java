@@ -22,4 +22,5 @@ module com.example.privateclinicms {
     exports com.privateclinicms;
     exports com.privateclinicms.controller;
     exports com.privateclinicms.controller.other;
+    opens com.privateclinicms.util to javafx.base;
 }
