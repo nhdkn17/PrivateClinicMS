@@ -8,8 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import org.controlsfx.control.ToggleSwitch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,17 +58,29 @@ public class WarehouseController {
 
     private HBox createMedicineCard(Thuoc thuoc) {
         HBox card = new HBox(10);
-        card.setStyle("-fx-background-color: #bcf7f1; -fx-border-color: #ccc; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10");
-        card.setPrefWidth(200);
+        card.setStyle("-fx-background-color: #d5f2f7; -fx-border-color: #ccc; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10");
+        card.setPrefWidth(204);
         card.setMinHeight(70);
+
+        Label nameLable = new Label(thuoc.getTenThuoc());
+        nameLable.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        Label quantityLabel = new Label("Số lượng tồn: " + thuoc.getSoLuongTon());
 
         VBox info = new VBox(5);
         info.getChildren().addAll(
-                new Label(thuoc.getTenThuoc()),
-                new Label("Số lượng tồn: " + thuoc.getSoLuongTon())
+                nameLable, quantityLabel
         );
 
         Button btnSelect = new Button("Chi tiết");
+//        btnSelect.setStyle("-fx-background-color: transparent;");
+//
+//        Image icon = new Image(getClass().getResourceAsStream("/image/details_icon.png"));
+//        ImageView iconView = new ImageView(icon);
+//        iconView.setFitHeight(16);
+//        iconView.setFitWidth(16);
+//
+//        btnSelect.setGraphic(iconView);
+
         btnSelect.setOnAction(e -> showDetails(thuoc));
 
         Region spacer = new Region();
@@ -102,7 +115,8 @@ public class WarehouseController {
 
         List<Thuoc> filteredList = new ArrayList<>();
         for (Thuoc thuoc : currentList) {
-            if (thuoc.getTenThuoc().toLowerCase().contains(keyword)) {
+            if (thuoc.getTenThuoc().toLowerCase().contains(keyword) ||
+                thuoc.getLoaiThuoc().toLowerCase().contains(keyword)) {
                 filteredList.add(thuoc);
             }
         }

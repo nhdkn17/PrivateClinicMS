@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -46,8 +48,11 @@ public class DashboardService {
         }
     }
 
-    public BigDecimal getDoanhThuHomNay() throws SQLException {
-        String sql = "SELECT SUM(TongTien) FROM HoaDon WHERE CAST(NgayTao AS DATE) = CAST(GETDATE() AS DATE) AND TrangThaiThanhToan = N'Đã thanh toán'";
+    public BigDecimal getRawDoanhThuHomNay() throws SQLException {
+        String sql = "SELECT SUM(ct.ThanhTien) " +
+                "FROM ChiTietToaThuoc ct " +
+                "JOIN ToaThuoc tt ON ct.MaToaThuoc = tt.MaToaThuoc " +
+                "WHERE CAST(tt.NgayLayThuoc AS DATE) = CAST(GETDATE() AS DATE)";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
@@ -61,13 +66,26 @@ public class DashboardService {
         }
     }
 
-    public Map<Integer, BigDecimal> getDoanhThuTheoNgayTrongThang(int thang, int nam) throws SQLException {
+    public String getFormattedDoanhThuHomNay() throws SQLException {
+        BigDecimal raw = getRawDoanhThuHomNay();
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(',');
+        symbols.setDecimalSeparator('.');
+
+        DecimalFormat formatter = new DecimalFormat("#,###.##", symbols);
+
+        return formatter.format(raw);
+    }
+
+    public Map<Integer, BigDecimal> getTongTienTheoNgayTrongThang(int thang, int nam) throws SQLException {
         Map<Integer, BigDecimal> map = new TreeMap<>();
-        String sql = "SELECT DAY(NgayTao) as ngay, SUM(TongTien) as doanh_thu " +
-                "FROM HoaDon " +
-                "WHERE MONTH(NgayTao) = ? AND YEAR(NgayTao) = ? " +
-                "GROUP BY DAY(NgayTao) " +
-                "ORDER BY Ngay";
+        String sql = "SELECT DAY(tt.NgayLayThuoc) AS ngay, SUM(ct.ThanhTien) AS tong_tien " +
+                "FROM ChiTietToaThuoc ct " +
+                "JOIN ToaThuoc tt ON ct.MaToaThuoc = tt.MaToaThuoc " +
+                "WHERE MONTH(tt.NgayLayThuoc) = ? AND YEAR(tt.NgayLayThuoc) = ? " +
+                "GROUP BY DAY(tt.NgayLayThuoc) " +
+                "ORDER BY ngay";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, thang);
@@ -75,12 +93,11 @@ public class DashboardService {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 int ngay = rs.getInt("ngay");
-                BigDecimal doanhThu = rs.getBigDecimal("doanh_thu");
-                map.put(ngay, doanhThu);
+                BigDecimal tongTien = rs.getBigDecimal("tong_tien");
+                map.put(ngay, tongTien);
             }
         }
         return map;
     }
-
 }
 

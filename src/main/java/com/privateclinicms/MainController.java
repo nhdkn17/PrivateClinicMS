@@ -37,7 +37,7 @@ public class MainController {
     }
 
     @FXML
-    private void loadAppointmentView() {
+    private void loadAppointmentContent() {
         loadFXMLContent("AppointmentView.fxml");
     }
 

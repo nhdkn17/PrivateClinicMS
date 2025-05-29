@@ -18,9 +18,11 @@ module com.example.privateclinicms {
     opens com.privateclinicms.model to javafx.base;
     opens com.privateclinicms.controller to javafx.fxml;
     opens com.privateclinicms.controller.other to javafx.fxml;
+    opens com.privateclinicms.util to javafx.base;
+    opens com.privateclinicms.controller.medicalThread to javafx.fxml;
 
     exports com.privateclinicms;
     exports com.privateclinicms.controller;
     exports com.privateclinicms.controller.other;
-    opens com.privateclinicms.util to javafx.base;
+    exports com.privateclinicms.controller.medicalThread;
 }

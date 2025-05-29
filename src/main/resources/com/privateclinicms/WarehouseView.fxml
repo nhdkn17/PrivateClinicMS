@@ -16,11 +16,19 @@
 
 <AnchorPane prefHeight="787.0" prefWidth="1275.0" stylesheets="@appointment-styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.privateclinicms.controller.WarehouseController">
     <children>
-        <Label layoutX="20.0" layoutY="20.0" style="-fx-font-size: 28px; -fx-font-weight: bold;" text="💊 QUẢN LÝ KHO THUỐC" />
+        <Label layoutX="20.0" layoutY="20.0" style="-fx-font-size: 28px; -fx-font-weight: bold;" text=" QUẢN LÝ KHO THUỐC">
+             <graphic>
+                 <ImageView fitHeight="33.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                         <Image url="@../../image/medicine_icon.png" />
+                     </image>
+                 </ImageView>
+             </graphic>
+        </Label>
         <Label layoutX="22.0" layoutY="82.0" text="🔍 Tìm kiếm:" />
-        <TextField fx:id="txtSearch" layoutX="103.0" layoutY="78.0" onKeyReleased="#onSearch" prefHeight="26.0" prefWidth="183.0" promptText="Tìm kiếm theo tên thuốc..." />
-        <ScrollPane layoutX="20.0" layoutY="120.0" prefHeight="618.0" prefWidth="880.0">
-            <FlowPane fx:id="cardContainer" hgap="10" prefHeight="614.0" prefWidth="862.0" vgap="10">
+        <TextField fx:id="txtSearch" layoutX="103.0" layoutY="78.0" onKeyReleased="#onSearch" prefHeight="26.0" prefWidth="272.0" promptText="Tìm kiếm theo tên thuốc hoặc công dụng..." />
+        <ScrollPane layoutX="20.0" layoutY="120.0" prefHeight="618.0" prefWidth="895.0">
+            <FlowPane fx:id="cardContainer" hgap="10" prefHeight="614.0" prefWidth="878.0" vgap="10">
                 <padding>
                     <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
