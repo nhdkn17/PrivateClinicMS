@@ -121,4 +121,35 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
         }
         return null;
     }
+
+    public Integer addReturnId(BenhNhan benhNhan) {
+        String sql = "INSERT INTO BenhNhan(TenBenhNhan, NgaySinh, GioiTinh, SoDienThoai, Email, DiaChi, NgayKham) VALUES(?,?,?,?,?,?,?)";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, benhNhan.getTenBenhNhan());
+            stmt.setDate(2, benhNhan.getNgaySinh());
+            stmt.setString(3, benhNhan.getGioiTinh());
+            stmt.setString(4, benhNhan.getSoDienThoai());
+            stmt.setString(5, benhNhan.getEmail());
+            stmt.setString(6, benhNhan.getDiaChi());
+            stmt.setDate(7, benhNhan.getNgayKham());
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating patient failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Creating patient failed, no ID obtained.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

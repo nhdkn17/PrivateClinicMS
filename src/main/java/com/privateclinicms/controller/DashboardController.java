@@ -1,33 +1,48 @@
 package com.privateclinicms.controller;
 
+import com.privateclinicms.MainController;
+import com.privateclinicms.controller.medicalThread.AddPatientController;
+import com.privateclinicms.controller.medicalThread.PatientThreadListener;
+import com.privateclinicms.controller.medicalThread.PatientWorkflow;
 import com.privateclinicms.controller.other.Dialog;
+import com.privateclinicms.dao.BenhNhanDAO;
 import com.privateclinicms.dao.DashboardService;
 import com.privateclinicms.dao.LichKhamDAO;
+import com.privateclinicms.model.BenhNhan;
 import com.privateclinicms.model.LichKhamModel;
 import com.privateclinicms.util.JDBCUtil;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class DashboardController {
+public class DashboardController implements PatientThreadListener {
     @FXML
     private Label lblSoBenhNhan;
     @FXML
@@ -58,9 +73,21 @@ public class DashboardController {
     private ComboBox<Integer> cbNam;
     @FXML
     private Pane paneBieuDo;
+    @FXML
+    private Button btnBatDauKham;
+    @FXML
+    private Button btnHuyKham;
+
+    private final Map<Integer, Thread> threadMap = new HashMap<>();
+    private final ObservableList<String> ongoingPatients = FXCollections.observableArrayList();
+
+    @FXML
+    private ListView<String> lstThreads;
+
 
     private DashboardService dashboardService;
     private LichKhamDAO lichKhamDAO;
+    private final Map<Integer, Thread> patientThreads = new HashMap<>();
 
     public void initialize() {
         dashboardService = new DashboardService(JDBCUtil.getConnection());
@@ -92,6 +119,18 @@ public class DashboardController {
         cbNam.setValue(currentYear);
 
         handleXemDoanhThuTheoThang();
+
+        lstThreads.setItems(ongoingPatients);
+        lstThreads.setOnMouseClicked(event -> {
+            String selectedItem = lstThreads.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                int maBenhNhan = extractMaBenhNhan(selectedItem);
+                if (maBenhNhan != -1) {
+                    showPatientDetail(maBenhNhan);
+                }
+            }
+        });
+
     }
 
     public void loadDashboardData() {
@@ -104,8 +143,8 @@ public class DashboardController {
             lblSoLichHen.setText(String.valueOf(dashboardService.getSoLichHenHomNay()));
             lblSoDonThuoc.setText(String.valueOf(dashboardService.getSoDonThuocHomNay()));
 
-            BigDecimal doanhThu = dashboardService.getDoanhThuHomNay();
-            lblDoanhThu.setText(doanhThu != null ? doanhThu.toString() + " VNĐ" : "0 VNĐ");
+            String doanhThu = dashboardService.getFormattedDoanhThuHomNay();
+            lblDoanhThu.setText(doanhThu != null ? doanhThu + " VNĐ" : "0 VNĐ");
 
             loadAppointmentsToday();
         } catch (SQLException e) {
@@ -171,7 +210,7 @@ public class DashboardController {
 
         if (thang != null && nam != null) {
             try {
-                Map<Integer, BigDecimal> map = dashboardService.getDoanhThuTheoNgayTrongThang(thang, nam);
+                Map<Integer, BigDecimal> map = dashboardService.getTongTienTheoNgayTrongThang(thang, nam);
 
                 paneBieuDo.getChildren().clear();
 
@@ -201,5 +240,107 @@ public class DashboardController {
                 Dialog.showNotice("Lỗi", "Không thể tải dữ liệu biểu đồ doanh thu.", false);
             }
         }
+    }
+
+    @FXML
+    private void handleMoThemBenhNhan() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/privateclinicms/MedicalThread/AddPatient.fxml"));
+            Parent root = loader.load();
+
+            AddPatientController controller = loader.getController();
+            controller.setDashboardController(this);
+
+            Stage stage = new Stage();
+            stage.setTitle("Thêm bệnh nhân");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addPatientThread(int maBenhNhan, Thread thread) {
+        threadMap.put(maBenhNhan, thread);
+        String displayText = "Bệnh nhân #" + maBenhNhan + " đang được khám";
+        ongoingPatients.add(displayText);
+    }
+
+    public void removePatientThread(int maBenhNhan) {
+        patientThreads.remove(maBenhNhan);
+        lstThreads.getItems().removeIf(item -> item.contains("ID: " + maBenhNhan));
+    }
+
+    @Override
+    public void onPatientThreadComplete(int maBenhNhan) {
+        Platform.runLater(() -> {
+            threadMap.remove(maBenhNhan);
+            ongoingPatients.removeIf(s -> s.contains("#" + maBenhNhan));
+        });
+    }
+
+    private int extractMaBenhNhan(String text) {
+        try {
+            String numberPart = text.replaceAll("\\D+", "");
+            return Integer.parseInt(numberPart);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+    private void showPatientDetail(int maBenhNhan) {
+        try {
+            BenhNhanDAO dao = new BenhNhanDAO();
+            BenhNhan bn = dao.getById(maBenhNhan);
+            if (bn != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Thông tin bệnh nhân");
+                alert.setHeaderText("Chi tiết bệnh nhân #" + maBenhNhan);
+                alert.setContentText(
+                        "Tên: " + bn.getTenBenhNhan() + "\n" +
+                                "Ngày sinh: " + bn.getNgaySinh() + "\n" +
+                                "Giới tính: " + bn.getGioiTinh() + "\n" +
+                                "SĐT: " + bn.getSoDienThoai() + "\n" +
+                                "Email: " + bn.getEmail() + "\n" +
+                                "Địa chỉ: " + bn.getDiaChi() + "\n" +
+                                "Ngày khám: " + bn.getNgayKham()
+                );
+                alert.showAndWait();
+            } else {
+                showError("Không tìm thấy bệnh nhân.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Lỗi khi tải thông tin bệnh nhân.");
+        }
+    }
+
+    @FXML
+    private void handleHuyKham() {
+        String selected = lstThreads.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Dialog.showNotice("Thông báo", "Vui lòng chọn bệnh nhân để hủy khám", false);
+            return;
+        }
+
+        int maBenhNhan = extractMaBenhNhan(selected);
+        if (threadMap.containsKey(maBenhNhan)) {
+            Thread thread = threadMap.get(maBenhNhan);
+            thread.interrupt(); // Gửi tín hiệu hủy
+            threadMap.remove(maBenhNhan);
+            ongoingPatients.removeIf(s -> s.contains("#" + maBenhNhan));
+            lstThreads.getItems().removeIf(s -> s.contains("ID: " + maBenhNhan));
+            Dialog.showNotice("Thành công", "Đã hủy khám bệnh nhân #" + maBenhNhan, true);
+        } else {
+            Dialog.showNotice("Lỗi", "Không tìm thấy luồng khám cho bệnh nhân này", false);
+        }
+    }
+
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Lỗi");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

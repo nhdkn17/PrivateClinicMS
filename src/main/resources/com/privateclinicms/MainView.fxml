@@ -45,7 +45,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button onAction="#loadAppointmentView" mnemonicParsing="false" styleClass="menu-button" text="Lịch Khám">
+                        <Button onAction="#loadAppointmentContent" mnemonicParsing="false" styleClass="menu-button" text="Lịch Khám">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-23.0">
                                     <image>

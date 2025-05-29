@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.privateclinicms.controller.medicalThread.AddPatientController">
+    <VBox spacing="10">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        <Label text="THÊM BỆNH NHÂN MỚI" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        <TextField fx:id="txtTenBenhNhan" promptText="Tên bệnh nhân"/>
+        <DatePicker fx:id="dpNgaySinh" promptText="Ngày sinh"/>
+        <HBox spacing="10">
+            <Label text="Giới tính:"/>
+            <RadioButton fx:id="rbNam" text="Nam" toggleGroup="$gioiTinhGroup"/>
+            <RadioButton fx:id="rbNu" text="Nữ" toggleGroup="$gioiTinhGroup"/>
+        </HBox>
+        <TextField fx:id="txtSoDienThoai" promptText="Số điện thoại"/>
+        <TextField fx:id="txtEmail" promptText="Email"/>
+        <TextField fx:id="txtDiaChi" promptText="Địa chỉ"/>
+        <DatePicker fx:id="dpNgayKham" promptText="Ngày khám"/>
+        <Button fx:id="btnLuu" text="Lưu bệnh nhân" onAction="#handleLuuBenhNhan"/>
+        <Label fx:id="lblThongBao" textFill="green"/>
+    </VBox>
+</AnchorPane>

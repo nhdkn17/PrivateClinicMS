@@ -20,6 +20,13 @@ public class ToaThuoc {
         this.ngayLayThuoc = ngayLayThuoc;
     }
 
+    public ToaThuoc(int maToaThuoc, int maBenhNhan, LocalDate ngayLayThuoc, List<ChiTietToaThuoc> chiTietToaThuocList) {
+        this.maToaThuoc = maToaThuoc;
+        this.maBenhNhan = maBenhNhan;
+        this.ngayLayThuoc = ngayLayThuoc;
+        this.chiTietToaThuocList = chiTietToaThuocList;
+    }
+
     public int getMaToaThuoc() {
         return maToaThuoc;
     }
