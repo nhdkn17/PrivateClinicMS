@@ -48,6 +48,52 @@ public class ThuocDAO implements DAO<Thuoc> {
         return null;
     }
 
+    public List<Thuoc> searchThuocByTen(String keyword) {
+        List<Thuoc> thuocList = new ArrayList<>();
+        String sql = "SELECT * FROM Thuoc WHERE LOWER(TenThuoc) LIKE ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + keyword.toLowerCase() + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Thuoc thuoc = new Thuoc();
+                thuoc.setMaThuoc(rs.getInt("MaThuoc"));
+                thuoc.setTenThuoc(rs.getString("TenThuoc"));
+                thuoc.setLoaiThuoc(rs.getString("LoaiThuoc"));
+                thuoc.setDonVi(rs.getString("DonVi"));
+                thuoc.setGia(rs.getDouble("Gia"));
+                thuoc.setSoLuongTon(rs.getInt("SoLuongTon"));
+                thuocList.add(thuoc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return thuocList;
+    }
+
+    public List<Thuoc> getThuocSapHet() {
+        List<Thuoc> thuocList = new ArrayList<>();
+        String sql = "SELECT * FROM Thuoc WHERE SoLuongTon < 50";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Thuoc thuoc = new Thuoc();
+                thuoc.setMaThuoc(rs.getInt("MaThuoc"));
+                thuoc.setTenThuoc(rs.getString("TenThuoc"));
+                thuoc.setLoaiThuoc(rs.getString("LoaiThuoc"));
+                thuoc.setDonVi(rs.getString("DonVi"));
+                thuoc.setGia(rs.getDouble("Gia"));
+                thuoc.setSoLuongTon(rs.getInt("SoLuongTon"));
+                thuocList.add(thuoc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return thuocList;
+    }
+
+
     @Override
     public List<Thuoc> getAll() {
         List<Thuoc> thuocList = new ArrayList<>();
