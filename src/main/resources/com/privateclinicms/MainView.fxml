@@ -11,14 +11,15 @@
     <children>
         <Pane prefHeight="787.0" prefWidth="256.0" styleClass="sidebar">
             <children>
-                <ImageView fitHeight="125.0" fitWidth="125.0" layoutX="66.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true" styleClass="profile-image">
+            <Pane layoutX="61.0" layoutY="46.0" prefHeight="135.0" prefWidth="135.0" style="-fx-background-color: white; -fx-background-radius: 20px;" />
+                <ImageView fitHeight="135.0" fitWidth="135.0" layoutX="66.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true" styleClass="profile-image" translateX="-5.0" translateY="-5.0">
                     <image>
-                        <Image url="@../../image/profile.png" />
+                        <Image url="@../../image/Clinic-logo2.png" />
                     </image>
                 </ImageView>
                 <VBox layoutX="12.0" layoutY="229.0" prefHeight="464.0" prefWidth="231.0" styleClass="sidebar-content">
                     <children>
-                        <Button onAction="#loadDashboardContent" mnemonicParsing="false" styleClass="menu-button" text="Bảng Điều Khiển">
+                        <Button mnemonicParsing="false" onAction="#loadDashboardContent" styleClass="menu-button" text="Bảng Điều Khiển">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-7.0">
                                     <image>
@@ -27,7 +28,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button onAction="#loadDoctorContent" mnemonicParsing="false" styleClass="menu-button" text="Bác Sĩ">
+                        <Button mnemonicParsing="false" onAction="#loadDoctorContent" styleClass="menu-button" text="Bác Sĩ">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-40.0">
                                     <image>
@@ -36,7 +37,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button onAction="#loadPatientContent" mnemonicParsing="false" styleClass="menu-button" text="Bệnh Nhân">
+                        <Button mnemonicParsing="false" onAction="#loadPatientContent" styleClass="menu-button" text="Bệnh Nhân">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-23.0">
                                     <image>
@@ -45,7 +46,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button onAction="#loadAppointmentContent" mnemonicParsing="false" styleClass="menu-button" text="Lịch Khám">
+                        <Button mnemonicParsing="false" onAction="#loadAppointmentContent" styleClass="menu-button" text="Lịch Khám">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-23.0">
                                     <image>
@@ -54,7 +55,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button onAction="#loadMedicineContent" mnemonicParsing="false" styleClass="menu-button" text="Lấy Thuốc">
+                        <Button mnemonicParsing="false" onAction="#loadMedicineContent" styleClass="menu-button" text="Lấy Thuốc">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-23.0">
                                     <image>
@@ -63,7 +64,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button onAction="#loadWarehouseContent" alignment="CENTER" mnemonicParsing="false" prefWidth="200.0" styleClass="menu-button" text="Kho Thuốc">
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#loadWarehouseContent" prefWidth="200.0" styleClass="menu-button" text="Kho Thuốc">
                             <graphic>
                                 <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="-22.0">
                                     <image>
@@ -74,7 +75,7 @@
                         </Button>
                     </children>
                 </VBox>
-                <Button onAction="#actionLogout" alignment="CENTER" contentDisplay="CENTER" layoutX="72.0" layoutY="730.0" mnemonicParsing="false" styleClass="logout-button" text="Đăng xuất">
+                <Button alignment="CENTER" contentDisplay="CENTER" layoutX="72.0" layoutY="730.0" mnemonicParsing="false" onAction="#actionLogout" styleClass="logout-button" text="Đăng xuất">
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" translateX="-49.0">
                             <image>
@@ -85,7 +86,7 @@
                 </Button>
             </children>
         </Pane>
-        <AnchorPane fx:id="mainContent" layoutX="256.0" prefHeight="787.0" prefWidth="1275.0" styleClass="main-content" >
+        <AnchorPane fx:id="mainContent" layoutX="256.0" prefHeight="787.0" prefWidth="1275.0" styleClass="main-content">
 
         </AnchorPane>
     </children>

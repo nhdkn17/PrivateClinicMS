@@ -12,7 +12,7 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
     public void add(BenhNhan benhNhan) {
         String sql = "INSERT INTO BenhNhan(TenBenhNhan, NgaySinh, GioiTinh, SoDienThoai, Email, DiaChi, NgayKham) VALUES(?,?,?,?,?,?,?)";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, benhNhan.getTenBenhNhan());
             stmt.setDate(2, benhNhan.getNgaySinh());
             stmt.setString(3, benhNhan.getGioiTinh());
@@ -31,7 +31,7 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
     public BenhNhan getById(int id) {
         String sql = "SELECT * FROM BenhNhan WHERE MaBenhNhan = ?";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -125,7 +125,7 @@ public class BenhNhanDAO implements DAO<BenhNhan> {
     public Integer addReturnId(BenhNhan benhNhan) {
         String sql = "INSERT INTO BenhNhan(TenBenhNhan, NgaySinh, GioiTinh, SoDienThoai, Email, DiaChi, NgayKham) VALUES(?,?,?,?,?,?,?)";
         try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, benhNhan.getTenBenhNhan());
             stmt.setDate(2, benhNhan.getNgaySinh());
             stmt.setString(3, benhNhan.getGioiTinh());

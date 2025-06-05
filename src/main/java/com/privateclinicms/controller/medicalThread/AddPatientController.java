@@ -1,6 +1,7 @@
 package com.privateclinicms.controller.medicalThread;
 
 import com.privateclinicms.controller.DashboardController;
+import com.privateclinicms.controller.other.Dialog;
 import com.privateclinicms.dao.BenhNhanDAO;
 import com.privateclinicms.model.BenhNhan;
 import javafx.fxml.FXML;
@@ -19,8 +20,6 @@ public class AddPatientController {
     private TextField txtSoDienThoai, txtEmail, txtDiaChi;
     @FXML
     private DatePicker dpNgayKham;
-    @FXML
-    private Label lblThongBao;
     @FXML
     private final ToggleGroup gioiTinhGroup = new ToggleGroup();
 
@@ -51,7 +50,8 @@ public class AddPatientController {
             Integer maBenhNhan = dao.addReturnId(benhNhan);
 
             if (maBenhNhan != null) {
-                lblThongBao.setText("Đã lưu bệnh nhân, mã là: " + maBenhNhan);
+                Dialog.showNotice("", "Đã lưu bệnh nhân, mã là: " + maBenhNhan, true);
+                clearForm();
 
                 Runnable process = new PatientWorkflow(maBenhNhan, dashboardController);
                 Thread thread = new Thread(process);
@@ -62,15 +62,27 @@ public class AddPatientController {
                     dashboardController.addPatientThread(maBenhNhan, thread);
                 }
             } else {
-                lblThongBao.setText("Lưu thất bại.");
-                lblThongBao.setTextFill(javafx.scene.paint.Color.RED);
+                Dialog.showNotice("Lỗi", "Lưu thất bại.", false);
             }
 
         } catch (Exception e) {
-            lblThongBao.setText("Lỗi dữ liệu đầu vào!");
-            lblThongBao.setTextFill(javafx.scene.paint.Color.RED);
+            Dialog.showNotice("Lỗi", "Lỗi dữ liệu đầu vào!", false);
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleClear() {
+        clearForm();
+    }
+
+    private void clearForm() {
+        txtTenBenhNhan.clear();
+        dpNgaySinh.setValue(null);
+        txtSoDienThoai.clear();
+        txtEmail.clear();
+        txtDiaChi.clear();
+        dpNgayKham.setValue(null);
     }
 
     private void startPatientThread(int maBenhNhan) {

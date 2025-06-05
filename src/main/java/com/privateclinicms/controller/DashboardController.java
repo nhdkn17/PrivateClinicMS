@@ -1,22 +1,20 @@
 package com.privateclinicms.controller;
 
-import com.privateclinicms.MainController;
 import com.privateclinicms.controller.medicalThread.AddPatientController;
 import com.privateclinicms.controller.medicalThread.PatientThreadListener;
-import com.privateclinicms.controller.medicalThread.PatientWorkflow;
 import com.privateclinicms.controller.other.Dialog;
 import com.privateclinicms.dao.BenhNhanDAO;
 import com.privateclinicms.dao.DashboardService;
 import com.privateclinicms.dao.LichKhamDAO;
+import com.privateclinicms.dao.ThuocDAO;
 import com.privateclinicms.model.BenhNhan;
 import com.privateclinicms.model.LichKhamModel;
+import com.privateclinicms.model.Thuoc;
 import com.privateclinicms.util.JDBCUtil;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import com.privateclinicms.util.XMLExporter;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,9 +25,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -88,10 +84,16 @@ public class DashboardController implements PatientThreadListener {
     private DashboardService dashboardService;
     private LichKhamDAO lichKhamDAO;
     private final Map<Integer, Thread> patientThreads = new HashMap<>();
+    private BenhNhanDAO benhNhanDAO;
+    private ThuocDAO thuocDAO;
+    private XMLExporter exporter;
 
     public void initialize() {
         dashboardService = new DashboardService(JDBCUtil.getConnection());
         lichKhamDAO = new LichKhamDAO();
+        benhNhanDAO = new BenhNhanDAO();
+        thuocDAO = new ThuocDAO();
+        exporter = new XMLExporter();
         loadDashboardData();
 
         colMaLichKham.setCellValueFactory(new PropertyValueFactory<>("maLichKham"));
@@ -263,12 +265,13 @@ public class DashboardController implements PatientThreadListener {
     public void addPatientThread(int maBenhNhan, Thread thread) {
         threadMap.put(maBenhNhan, thread);
         String displayText = "Bệnh nhân #" + maBenhNhan + " đang được khám";
+
         ongoingPatients.add(displayText);
     }
 
     public void removePatientThread(int maBenhNhan) {
         patientThreads.remove(maBenhNhan);
-        lstThreads.getItems().removeIf(item -> item.contains("ID: " + maBenhNhan));
+        lstThreads.getItems().removeIf(item -> item.contains("#" + maBenhNhan));
     }
 
     @Override
@@ -276,6 +279,19 @@ public class DashboardController implements PatientThreadListener {
         Platform.runLater(() -> {
             threadMap.remove(maBenhNhan);
             ongoingPatients.removeIf(s -> s.contains("#" + maBenhNhan));
+            BenhNhan bn = benhNhanDAO.getById(maBenhNhan);
+
+            Dialog.showNotice("Thành công", "Đã khám xong bệnh nhân " + maBenhNhan, true);
+            loadDashboardData();
+
+            List<Thuoc> thuocNgauNhien = null;
+            try {
+                thuocNgauNhien = thuocDAO.getRandomThuoc(4);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            exporter.xuatToaThuocXML(bn, thuocNgauNhien);
         });
     }
 
@@ -297,20 +313,20 @@ public class DashboardController implements PatientThreadListener {
                 alert.setHeaderText("Chi tiết bệnh nhân #" + maBenhNhan);
                 alert.setContentText(
                         "Tên: " + bn.getTenBenhNhan() + "\n" +
-                                "Ngày sinh: " + bn.getNgaySinh() + "\n" +
-                                "Giới tính: " + bn.getGioiTinh() + "\n" +
-                                "SĐT: " + bn.getSoDienThoai() + "\n" +
-                                "Email: " + bn.getEmail() + "\n" +
-                                "Địa chỉ: " + bn.getDiaChi() + "\n" +
-                                "Ngày khám: " + bn.getNgayKham()
+                        "Ngày sinh: " + bn.getNgaySinh() + "\n" +
+                        "Giới tính: " + bn.getGioiTinh() + "\n" +
+                        "SĐT: " + bn.getSoDienThoai() + "\n" +
+                        "Email: " + bn.getEmail() + "\n" +
+                        "Địa chỉ: " + bn.getDiaChi() + "\n" +
+                        "Ngày khám: " + bn.getNgayKham()
                 );
                 alert.showAndWait();
             } else {
-                showError("Không tìm thấy bệnh nhân.");
+                Dialog.showNotice("Lỗi", "Không tìm thấy bệnh nhân!", false);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Lỗi khi tải thông tin bệnh nhân.");
+            Dialog.showNotice("Lỗi", "Lỗi khi tải thông tin bệnh nhân!", false);
         }
     }
 
@@ -325,7 +341,7 @@ public class DashboardController implements PatientThreadListener {
         int maBenhNhan = extractMaBenhNhan(selected);
         if (threadMap.containsKey(maBenhNhan)) {
             Thread thread = threadMap.get(maBenhNhan);
-            thread.interrupt(); // Gửi tín hiệu hủy
+            thread.interrupt();
             threadMap.remove(maBenhNhan);
             ongoingPatients.removeIf(s -> s.contains("#" + maBenhNhan));
             lstThreads.getItems().removeIf(s -> s.contains("ID: " + maBenhNhan));
@@ -333,14 +349,5 @@ public class DashboardController implements PatientThreadListener {
         } else {
             Dialog.showNotice("Lỗi", "Không tìm thấy luồng khám cho bệnh nhân này", false);
         }
-    }
-
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Lỗi");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
