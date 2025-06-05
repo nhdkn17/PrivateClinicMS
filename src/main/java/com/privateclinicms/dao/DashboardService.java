@@ -18,7 +18,13 @@ public class DashboardService {
     }
 
     public int getSoBenhNhanHomNay() throws SQLException {
-        String sql = "SELECT COUNT(DISTINCT MaBenhNhan) FROM LichKham WHERE CAST(GioBatDau AS DATE) = CAST(GETDATE() AS DATE)";
+        String sql = """
+        SELECT COUNT(DISTINCT MaBenhNhan) FROM (
+            SELECT MaBenhNhan FROM LichKham WHERE CAST(GioBatDau AS DATE) = CAST(GETDATE() AS DATE)
+            UNION
+            SELECT MaBenhNhan FROM BenhNhan WHERE CAST(NgayKham AS DATE) = CAST(GETDATE() AS DATE)
+        ) AS Combined
+        """;
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException e) {
@@ -26,6 +32,7 @@ public class DashboardService {
             throw e;
         }
     }
+
 
     public int getSoLichHenHomNay() throws SQLException {
         String sql = "SELECT COUNT(*) FROM LichKham WHERE CAST(GioBatDau AS DATE) = CAST(GETDATE() AS DATE)";

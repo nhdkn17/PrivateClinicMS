@@ -157,4 +157,24 @@ public class ThuocDAO implements DAO<Thuoc> {
             e.printStackTrace();
         }
     }
+
+    public List<Thuoc> getRandomThuoc(int soLuong) throws SQLException {
+        String sql = "SELECT TOP (?) * FROM Thuoc ORDER BY NEWID()";
+        List<Thuoc> dsThuoc = new ArrayList<>();
+        try (Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, soLuong);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Thuoc t = new Thuoc();
+                    t.setMaThuoc(rs.getInt("MaThuoc"));
+                    t.setTenThuoc(rs.getString("TenThuoc"));
+                    t.setDonVi(rs.getString("DonVi"));
+                    t.setGia(rs.getDouble("Gia"));
+                    dsThuoc.add(t);
+                }
+            }
+        }
+        return dsThuoc;
+    }
 }

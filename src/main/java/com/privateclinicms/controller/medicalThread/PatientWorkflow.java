@@ -1,8 +1,25 @@
 package com.privateclinicms.controller.medicalThread;
 
+import com.privateclinicms.controller.DashboardController;
+import com.privateclinicms.controller.other.Dialog;
+import com.privateclinicms.dao.BenhNhanDAO;
+import com.privateclinicms.dao.ThuocDAO;
+import com.privateclinicms.model.BenhNhan;
+import com.privateclinicms.model.Thuoc;
+import com.privateclinicms.util.XMLExporter;
+import javafx.application.Platform;
+
+import java.sql.SQLException;
+import java.util.List;
+
 public class PatientWorkflow implements Runnable {
     private final int maBenhNhan;
     private final PatientThreadListener listener;
+
+    BenhNhanDAO benhNhanDAO = new BenhNhanDAO();
+    ThuocDAO thuocDAO = new ThuocDAO();
+    XMLExporter exporter = new XMLExporter();
+    DashboardController dashboardController = new DashboardController();
 
     public PatientWorkflow(int maBenhNhan, PatientThreadListener listener) {
         this.maBenhNhan = maBenhNhan;
@@ -14,22 +31,21 @@ public class PatientWorkflow implements Runnable {
         try {
             System.out.println("🔄 Bắt đầu quy trình khám cho bệnh nhân ID: " + maBenhNhan);
 
-            // Ví dụ các bước khám bệnh
-            Thread.sleep(2000); // Bước 1: Tiếp nhận
+            Thread.sleep(5000);
             System.out.println("✅ Tiếp nhận xong cho bệnh nhân " + maBenhNhan);
 
-            Thread.sleep(2000); // Bước 2: Đo sinh hiệu
+            Thread.sleep(5000);
             System.out.println("✅ Đo sinh hiệu xong cho bệnh nhân " + maBenhNhan);
 
-            Thread.sleep(3000); // Bước 3: Khám bác sĩ
+            Thread.sleep(5000);
             System.out.println("✅ Khám bác sĩ xong cho bệnh nhân " + maBenhNhan);
 
-            Thread.sleep(2000); // Bước 4: Lấy thuốc
+            Thread.sleep(5000);
             System.out.println("✅ Lấy thuốc xong cho bệnh nhân " + maBenhNhan);
 
             System.out.println("🎉 Hoàn tất quy trình cho bệnh nhân: " + maBenhNhan);
         } catch (InterruptedException e) {
-            System.out.println("⚠️ Luồng khám bệnh bị gián đoạn cho bệnh nhân: " + maBenhNhan);
+            System.out.println("⚠️ Đã hủy khám cho bệnh nhân: " + maBenhNhan);
         } finally {
             if (listener != null) {
                 listener.onPatientThreadComplete(maBenhNhan);

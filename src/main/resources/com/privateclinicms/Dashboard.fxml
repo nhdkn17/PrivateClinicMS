@@ -17,13 +17,13 @@
 <AnchorPane prefHeight="787.0" prefWidth="1275.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.privateclinicms.controller.DashboardController">
     <children>
         <BorderPane prefHeight="787" prefWidth="1275">
-            <top>
-                <HBox alignment="CENTER_RIGHT" spacing="20" style="-fx-background-color: #ecf0f1;">
-                    <Label text="Xin chào, Bác sĩ" translateX="-11.0" />
-                    <Button text="🔔" translateX="-4.0" />
-                    <Button text="⚙" translateX="-16.0" />
-                </HBox>
-            </top>
+<!--            <top>-->
+<!--                <HBox alignment="CENTER_RIGHT" spacing="20" style="-fx-background-color: #ecf0f1;">-->
+<!--                    <Label text="Xin chào, Bác sĩ" translateX="-11.0" />-->
+<!--                    <Button text="🔔" translateX="-4.0" />-->
+<!--                    <Button text="⚙" translateX="-16.0" />-->
+<!--                </HBox>-->
+<!--            </top>-->
             <center>
             <ScrollPane>
                <content>
@@ -46,11 +46,11 @@
                                   <Label fx:id="lblDoanhThu" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
                               </VBox>
                           </HBox>
-                          <VBox>
-                              <Label alignment="CENTER_LEFT" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Khám Bệnh" />
-                              <Button fx:id="btnBatDauKham" onAction="#handleMoThemBenhNhan" text="Bắt đầu khám" />
-                              <ListView fx:id="lstThreads" prefHeight="400" />
-                              <Button fx:id="btnHuyKham" onAction="#handleHuyKham" text="Hủy khám" />
+                          <VBox prefHeight="343.0" prefWidth="1220.0" spacing="5">
+                              <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Khám Bệnh" />
+                              <Button fx:id="btnBatDauKham" onAction="#handleMoThemBenhNhan" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Bắt đầu khám" />
+                              <ListView fx:id="lstThreads" minHeight="200" />
+                              <Button fx:id="btnHuyKham" onAction="#handleHuyKham" style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Hủy khám" />
                           </VBox>
                           <HBox spacing="20">
                               <VBox prefWidth="600" spacing="5">
